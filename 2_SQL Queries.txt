@@ -1,0 +1,133 @@
+Experiment No : 2
+NAME : Aditya Ratnakar Kotame
+Roll No : A60
+
+
+mysql> create database clg;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use clg;
+Database changed
+
+mysql> create table sdetails(s_id int,name varchar(30),address varchar(30));
+Query OK, 0 rows affected (0.16 sec)
+
+mysql> insert into sdetails values(1,'Aditya','Nashik');
+Query OK, 1 row affected (0.06 sec)
+
+mysql> insert into sdetails values(2,'Atharva','Jalgoan');
+Query OK, 1 row affected (0.06 sec)
+
+mysql> insert into sdetails values(3,'Anurag','Nagpur');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into sdetails values(4,'Yash','Pune');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from sdetails;
++------+---------+-------+------+
+| id   | name    | marks | age  |
++------+---------+-------+------+
+|    1 | Aditya  |    60 |   19 |
+|    2 | Atharva |    12 |   20 |
+|    3 | Anurag  |    18 |   21 |
+|    4 | Yash    |    10 |   21 |
++------+---------+-------+------+
+4 rows in set (0.00 sec)
+
+
+mysql> create view VIEW as select name,address from sdetails where s_id<4;
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> select *from VIEW ;
++---------+---------+
+| name    | address |
++---------+---------+
+| Aditya  | Nashik  |
+| Atharva | Jalgoan |
+| Anurag  | Nagpur  |
++---------+---------+
+3 rows in set (0.01 sec)
+
+mysql> create view VIEW2 as select s_id,name from sdetails order by name;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select *from VIEW2 ;
++------+---------+
+| s_id | name    |
++------+---------+
+|    1 | Aditya  |
+|    3 | Anurag  |
+|    2 | Atharva |
+|    4 | Yash    |
++------+---------+
+4 rows in set (0.03 sec)
+
+mysql> create or replace view VIEW3 as select sdetails.name,sdetails.address,smarks.marks,smarks.age from sdetails , smarks where sdetails.name=smarks.name;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from VIEW3;
++---------+---------+-------+------+
+| name    | address | marks | age  |
++---------+---------+-------+------+
+| Aditya  | Nashik  |    60 |   19 |
+| Atharva | Jalgoan |    12 |   20 |
+| Anurag  | Nagpur  |    18 |   21 |
+| Yash    | Pune    |    10 |   21 |
++---------+---------+-------+------+
+4 rows in set (0.04 sec)
+
+mysql> delete from VIEW2 where name="Yash";
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select*from VIEW2;
++------+---------+
+| s_id | name    |
++------+---------+
+|    1 | Aditya  |
+|    3 | Anurag  |
+|    2 | Atharva |
++------+---------+
+3 rows in set (0.00 sec)
+
+mysql> create index INDEX2 on sdetails(address,s_id);
+Query OK, 0 rows affected (0.18 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> create index ind123 on sdetails(address,s_id);
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
+mysql> create index ind234 on sdetails(name ASC);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show index from sdetails;
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table    | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| sdetails |          1 | INDEX2   |            1 | address     | A         |           3 |     NULL | NULL   | YES  | BTREE      |         |               |
+| sdetails |          1 | INDEX2   |            2 | s_id        | A         |           3 |     NULL | NULL   | YES  | BTREE      |         |               |
+| sdetails |          1 | ind123   |            1 | address     | A         |           3 |     NULL | NULL   | YES  | BTREE      |         |               |
+| sdetails |          1 | ind123   |            2 | s_id        | A         |           3 |     NULL | NULL   | YES  | BTREE      |         |               |
+| sdetails |          1 | ind234   |            1 | name        | A         |           3 |     NULL | NULL   | YES  | BTREE      |         |               |
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+5 rows in set (0.00 sec)
+
+mysql> create index INDEX5 on smarks(marks ASC);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show index from smarks;
++--------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table  | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++--------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| smarks |          1 | INDEX5   |            1 | marks       | A         |           4 |     NULL | NULL   | YES  | BTREE      |         |               |
++--------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+1 row in set (0.00 sec)
+
+mysql> drop index INDEX5 on smarks;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+

@@ -1,0 +1,158 @@
+Experiment No: 3
+Name: Aditya Ratnakar Kotame
+Roll No: A60 
+
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| clg                |
+| mysql              |
+| performance_schema |
+| sys                |
+| t1                 |
++--------------------+
+6 rows in set (0.01 sec)
+
+mysql> use clg
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+
+mysql> create table borrower(rollin int primary key,name varchar(20),dateofissue date,nameofbook varchar(20),status varchar(20));
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> desc borrower;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| rollin      | int(11)     | NO   | PRI | NULL    |       |
+| name        | varchar(20) | YES  |     | NULL    |       |
+| dateofissue | date        | YES  |     | NULL    |       |
+| nameofbook  | varchar(20) | YES  |     | NULL    |       |
+| status      | varchar(20) | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+5 rows in set (0.03 sec)
+
+mysql> create table fine(rollno int,foreign key(rollno) references borrower(rollin),returndate date,amount int not null);
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> desc fine;
++------------+---------+------+-----+---------+-------+
+| Field      | Type    | Null | Key | Default | Extra |
++------------+---------+------+-----+---------+-------+
+| rollno     | int(11) | YES  | MUL | NULL    |       |
+| returndate | date    | YES  |     | NULL    |       |
+| amount     | int(11) | NO   |     | NULL    |       |
++------------+---------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into borrower values(1,'abc','2023-08-20','DBMS','PEN');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into borrower values(2,'def','2023-08-15','CNS','PEN');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into borrower values(3,'xyz','2023-08-31','OOP','PEN');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into borrower values(4,'pqr','2023-09-01','TOC','PEN');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into borrower values(5,'tyz','2023-09-15','M-III','PEN');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from borrower;
++--------+------+-------------+------------+--------+
+| rollin | name | dateofissue | nameofbook | status |
++--------+------+-------------+------------+--------+
+|      1 | abc  | 2023-08-20  | DBMS       | PEN    |
+|      2 | def  | 2023-08-15  | CNS        | PEN    |
+|      3 | xyz  | 2023-08-31  | OOP        | PEN    |
+|      4 | pqr  | 2023-09-01  | TOC        | PEN    |
+|      5 | tyz  | 2023-09-15  | M-III      | PEN    |
++--------+------+-------------+------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> delimiter $$
+mysql> create procedure cal_fine(in roll int)
+    -> begin
+    -> declare fine1 int;
+    -> declare noofdays int;
+    -> declare issuedate date;
+    -> declare exit handler for SQLEXCEPTION select 'Create table defination';
+    -> select  dateofissue into issuedate from borrower where rollin=roll;
+    -> select datediff(curdate(),issuedate) into noofdays;
+    -> if noofdays>15 and noofdays<=30 then
+    -> set fine1=(noofdays-15)*5;
+    -> insert into fine values(roll,curdate(),fine1);
+    -> elseif noofdays>30 then
+    -> set fine1=(noofdays-30)*50+15*5;
+    -> insert into fine values(roll,curdate(),fine1);
+    -> else
+    -> insert into fine values(roll,curdate(),0);
+    -> end if;
+    -> update borrower set status='RETURN' where rollin=roll;
+    -> end $$
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> select * from fine; $$
+Empty set (0.00 sec)
+
+mysql> call cal_fine(1) $$
+Query OK, 1 row affected (0.14 sec)
+
+mysql> select * from fine; $$
++--------+------------+--------+
+| rollno | returndate | amount |
++--------+------------+--------+
+|      1 | 2023-10-11 |   1175 |
++--------+------------+--------+
+1 row in set (0.00 sec)
+
+mysql> call cal_fine(2) $$
+Query OK, 1 row affected (0.04 sec)
+
+mysql> call cal_fine(3) $$
+Query OK, 1 row affected (0.01 sec)
+
+mysql> call cal_fine(4) $$
+Query OK, 1 row affected (0.00 sec)
+
+mysql> call cal_fine(5) $$
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from fine; $$
++--------+------------+--------+
+| rollno | returndate | amount |
++--------+------------+--------+
+|      1 | 2023-10-11 |   1175 |
+|      2 | 2023-10-11 |   1425 |
+|      3 | 2023-10-11 |    625 |
+|      4 | 2023-10-11 |    575 |
+|      5 | 2023-10-11 |     55 |
++--------+------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> drop table fine; $$
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> create table fine(rollno int,foreign key(rollno) references borrower(rollin),returndate date,amount int not null); $$
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call cal_fine(1) $$
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from fine; $$
++--------+------------+--------+
+| rollno | returndate | amount |
++--------+------------+--------+
+|      1 | 2023-10-11 |   1175 |
++--------+------------+--------+
+1 row in set (0.00 sec)
+
+
+

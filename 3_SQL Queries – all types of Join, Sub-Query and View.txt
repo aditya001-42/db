@@ -1,0 +1,131 @@
+Experiment No: 3
+Name: Aditya Ratnakar Kotame
+Roll No: A60
+
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| clg                |
+| mysql              |
+| performance_schema |
+| sys                |
+| t1                 |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql> use clg;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> create table student1(rollno int primary key ,name varchar(20),address varchar(33),age int);
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> insert into student1 values(1,'aditya','pune',20);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into student1 values(2,'soham','dhule',20);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into student1 values(3,'atharva','nashik',19);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into student1 values(4,'rahul','latur',18);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select*from student1;
++--------+---------+---------+------+
+| rollno | name    | address | age  |
++--------+---------+---------+------+
+|      1 | aditya  | pune    |   20 |
+|      2 | soham   | dhule   |   20 |
+|      3 | atharva | nashik  |   19 |
+|      4 | rahul   | latur   |   18 |
++--------+---------+---------+------+
+4 rows in set (0.00 sec)
+
+mysql> create table sc(course_id int,rollno int,foreign key(rollno) references student1(rollno));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> insert into sc values(1,1);
+Query OK, 1 row affected (0.05 sec)
+
+mysql> insert into sc values(2,2);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into sc values(3,3);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into sc values(4,4);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select * from sc;
++-----------+--------+
+| course_id | rollno |
++-----------+--------+
+|         1 |      1 |
+|         2 |      2 |
+|         3 |      3 |
+|         4 |      4 |
++-----------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select student1.rollno,student1.name,student1.address,student1.age from student1 inner join sc on student1.rollno=sc.rollno;
++--------+---------+---------+------+
+| rollno | name    | address | age  |
++--------+---------+---------+------+
+|      1 | aditya  | pune    |   20 |
+|      2 | soham   | dhule   |   20 |
+|      3 | atharva | nashik  |   19 |
+|      4 | rahul   | latur   |   18 |
++--------+---------+---------+------+
+4 rows in set (0.06 sec)
+
+mysql> select student1.rollno,student1.name,student1.age from student1 left join sc on student1. rollno=sc.rollno;
++--------+---------+------+
+| rollno | name    | age  |
++--------+---------+------+
+|      1 | aditya  |   20 |
+|      2 | soham   |   20 |
+|      3 | atharva |   19 |
+|      4 | rahul   |   18 |
++--------+---------+------+
+4 rows in set (0.05 sec)
+
+mysql> select student1.name,sc.course_id from student1 left join sc on sc.rollno=student1 .rollno;
++---------+-----------+
+| name    | course_id |
++---------+-----------+
+| aditya  |         1 |
+| soham   |         2 |
+| atharva |         3 |
+| rahul   |         4 |
++---------+-----------+
+4 rows in set (0.02 sec)
+
+mysql> select student1.name,sc.course_id from student1 right join sc on sc.rollno=student1 .rollno;
++---------+-----------+
+| name    | course_id |
++---------+-----------+
+| aditya  |         1 |
+| soham   |         2 |
+| atharva |         3 |
+| rahul   |         4 |
++---------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> select student1.address,sc.course_id from student1 right join sc on sc.rollno=student1 .rollno;
++---------+-----------+
+| address | course_id |
++---------+-----------+
+| pune    |         1 |
+| dhule   |         2 |
+| nashik  |         3 |
+| latur   |         4 |
++---------+-----------+
+4 rows in set (0.00 sec)
+
+

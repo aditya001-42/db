@@ -1,0 +1,47 @@
+Experiment No : 5
+Name : Aditya Ratnakar Kotame
+Roll No: A60
+
+
+show databases;
+
+mysql> use clg;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> delimiter $$
+mysql> create procedure ar1(in r int)
+    -> begin
+    -> declare a decimal(5,2);
+    -> loop1: loop
+    -> if(r>9) then
+    -> leave loop1;
+    -> end if;
+    -> set a = 3.14 * r * r;
+    -> insert into areas1 values(r, a);
+    -> set r = r+1;
+    -> end loop loop1;
+    -> select * from areas1;
+    -> end $$
+Query OK, 0 rows affected (0.20 sec)
+
+mysql> create table areas1(radius int, area decimal(5,2)); $$
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> call ar1(5);
+    -> $$
++--------+--------+
+| radius | area   |
++--------+--------+
+|      5 |  78.50 |
+|      6 | 113.04 |
+|      7 | 153.86 |
+|      8 | 200.96 |
+|      9 | 254.34 |
++--------+--------+
+5 rows in set (0.09 sec)
+
+Query OK, 0 rows affected (0.09 sec)
+
+

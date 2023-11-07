@@ -1,0 +1,151 @@
+Experiment No : 7
+Name : Aditya Ratnakar Kotame
+Roll No: A60
+
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| clg                |
+| mysql              |
+| performance_schema |
+| sys                |
+| t1                 |
++--------------------+
+6 rows in set (0.00 sec)
+
+
+mysql> use clg;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> create table O_rollcall (rno int(3) primary key, name varchar(20), addr varchar(30));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> insert into O_rollcall values (1,'Aditya','Nashik');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into O_rollcall values (2,'Anurag','Nagpur');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into O_rollcall values (3,'Atharva','Jalgoan');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from O_rollcall;
++-----+---------+---------+
+| rno | name    | addr    |
++-----+---------+---------+
+|   1 | Aditya  | Nashik  |
+|   2 | Anurag  | Nagpur  |
+|   3 | Atharva | Jalgoan |
++-----+---------+---------+
+3 rows in set (0.00 sec)
+
+mysql> create table N_rollcall(rno int(3),name varchar(20),addr varchar(30));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from N_rollcall;
+Empty set (0.03 sec)
+
+mysql> insert into N_rollcall select * from O_rollcall;
+Query OK, 3 rows affected (0.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from N_rollcall;
++------+---------+---------+
+| rno  | name    | addr    |
++------+---------+---------+
+|    1 | Aditya  | Nashik  |
+|    2 | Anurag  | Nagpur  |
+|    3 | Atharva | Jalgoan |
++------+---------+---------+
+3 rows in set (0.00 sec)
+
+mysql> delete from N_rollcall;
+Query OK, 3 rows affected (0.03 sec)
+
+mysql> select * from N_rollcall;
+Empty set (0.00 sec)
+
+mysql> delimiter $$
+mysql> create procedure new1 (in rno1 int(3))
+    -> begin
+    -> if not exists (select * from N_rollcall where rno=rno1) then
+    -> insert into N_rollcall
+    -> select * from O_rollcall
+    -> where rno=rno1;
+    -> end if;
+    -> end
+    -> $$
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from N_rollcall;
+    -> $$
++------+--------+--------+
+| rno  | name   | addr   |
++------+--------+--------+
+|    1 | Aditya | Nashik |
++------+--------+--------+
+1 row in set (0.00 sec)
+
+
+mysql> create procedure newcur(in rno1 int(3))
+    -> begin
+    -> declare c1 cursor for select rno from O_rollcall where rno=rno1;
+    -> open c1;
+    -> fetch c1 into rno1;
+    -> if not exists(select * from N_rollcall where rno=rno1) then
+    -> insert into N_rollcall select * from O_rollcall where rno=rno1;
+    -> end if;
+    -> close c1;
+    -> end $$
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> call newcur(2) $$
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from N_rollcall; $$
++------+--------+--------+
+| rno  | name   | addr   |
++------+--------+--------+
+|    1 | Aditya | Nashik |
+|    2 | Anurag | Nagpur |
++------+--------+--------+
+2 rows in set (0.00 sec)
+
+mysql> create procedure newcur1(in rno1 int(3))
+    -> begin
+    -> declare rno2 int(3);
+    -> declare exit_loop boolean;
+    -> declare c1 cursor for select rno from O_rollcall where rno>rno1;
+    -> declare continue handler for not found set exit_loop = TRUE;
+    -> open c1;
+    -> emp_loop:LOOP
+    -> fetch c1 into rno2;
+    -> if not exists(select*from N_rollcall where rno=rno2) then
+    -> insert into N_rollcall select * from O_rollcall where rno=rno2;
+    -> end if;
+    -> if exit_loop then
+    -> close c1;
+    -> leave emp_loop;
+    -> end if;
+    -> end LOOP emp_loop;
+    -> end $$
+Query OK, 0 rows affected (0.30 sec)
+
+mysql> call newcur1(1) $$
+Query OK, 0 rows affected (0.05 sec)
+
+
+mysql> select * from N_rollcall; $$
++------+---------+---------+
+| rno  | name    | addr    |
++------+---------+---------+
+|    1 | Aditya  | Nashik  |
+|    2 | Anurag  | Nagpur  |
+|    3 | Atharva | Jalgoan |
++------+---------+---------+
+3 rows in set (0.00 sec)

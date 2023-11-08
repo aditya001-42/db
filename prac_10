@@ -1,0 +1,166 @@
+(base) student@student:~$ mongo
+MongoDB shell version: 2.6.10
+connecting to: test
+
+> use comp
+switched to db comp
+> db.createCollection('website');
+{ "ok" : 1 }
+> use compdb.website.insert({'roll':'01','name':'Dnyaneshwari','amount':1000,'url':'www.yahoo.com'});
+2023-10-26T13:59:26.205+0530 Error: [compdb.website.insert({'roll':'01','name':'Dnyaneshwari','amount':1000,'url':'www.yahoo.com'})] is not a valid database name at src/mongo/shell/mongo.js:41
+>  db.website.insert({'roll':'1','name':'Dnyani','amount':1000,'url':'www.yahoo.com'});
+WriteResult({ "nInserted" : 1 })
+>  db.website.insert({'roll':'2','name':'Sameera','amount':4000,'url':'www.yahoo.com'});
+WriteResult({ "nInserted" : 1 })
+>  db.website.insert({'roll':'2','name':'Pradnya','amount':4000,'url':'www.yahoo.com'});
+WriteResult({ "nInserted" : 1 })
+> db.website.insert({'roll':'4','name':'Dnyaneshwari','amount':6000,'url':'www.gmail.com'});
+WriteResult({ "nInserted" : 1 })
+> db.website.insert({'roll':'5','name':'Vishu','amount':3000,'url':'www.pvb.com'});
+WriteResult({ "nInserted" : 1 })
+> db.website.insert({'roll':'6','name':'Anshu','amount':7000,'url':'www.amt.com'});
+WriteResult({ "nInserted" : 1 })
+>  db.website.insert({'roll':'7','name':'Vishu','amount':9000,'url':'www.pvb.com'});
+WriteResult({ "nInserted" : 1 })
+> WriteResult({ "nInserted" : 1 })
+2023-10-26T14:05:23.419+0530 TypeError: Cannot read property 'length' of undefined at src/mongo/shell/bulk_api.js:135
+>  db.website.insert({'roll':'7','name':'Vishu','amount':9000,'url':'www.pvb.com'});
+WriteResult({ "nInserted" : 1 })
+> WriteResult({ "nInserted" : 1 })
+2023-10-26T14:05:40.720+0530 TypeError: Cannot read property 'length' of undefined at src/mongo/shell/bulk_api.js:135
+> db.website.insert({'roll':'7','name':'Manik','amount':9000,'url':'www.pvb.com'});
+WriteResult({ "nInserted" : 1 })
+> db.website.find();
+{ "_id" : ObjectId("653a243101b81b0b805dd59f"), "roll" : "1", "name" : "Dnyani", "amount" : 1000, "url" : "www.yahoo.com" }
+{ "_id" : ObjectId("653a244201b81b0b805dd5a0"), "roll" : "2", "name" : "Sameera", "amount" : 4000, "url" : "www.yahoo.com" }
+{ "_id" : ObjectId("653a247301b81b0b805dd5a1"), "roll" : "2", "name" : "Pradnya", "amount" : 4000, "url" : "www.yahoo.com" }
+{ "_id" : ObjectId("653a249e01b81b0b805dd5a2"), "roll" : "4", "name" : "Dnyaneshwari", "amount" : 6000, "url" : "www.gmail.com" }
+{ "_id" : ObjectId("653a24a701b81b0b805dd5a3"), "roll" : "5", "name" : "Vishu", "amount" : 3000, "url" : "www.pvb.com" }
+{ "_id" : ObjectId("653a24b701b81b0b805dd5a4"), "roll" : "6", "name" : "Anshu", "amount" : 7000, "url" : "www.amt.com" }
+{ "_id" : ObjectId("653a24cb01b81b0b805dd5a5"), "roll" : "7", "name" : "Vishu", "amount" : 9000, "url" : "www.pvb.com" }
+{ "_id" : ObjectId("653a24dc01b81b0b805dd5a6"), "roll" : "7", "name" : "Vishu", "amount" : 9000, "url" : "www.pvb.com" }
+{ "_id" : ObjectId("653a24f101b81b0b805dd5a7"), "roll" : "7", "name" : "Manik", "amount" : 9000, "url" : "www.pvb.com" }
+> db.website.aggregate({$group:{_id:"$name","total":{$sum:"$amount"}}});
+{ "_id" : "Manik", "total" : 9000 }
+{ "_id" : "Anshu", "total" : 7000 }
+{ "_id" : "Vishu", "total" : 21000 }
+{ "_id" : "Dnyaneshwari", "total" : 6000 }
+{ "_id" : "Pradnya", "total" : 4000 }
+{ "_id" : "Sameera", "total" : 4000 }
+{ "_id" : "Dnyani", "total" : 1000 }
+>  db.website.aggregate({$group:{_id:"$name","total":{$avg:"$amount"}}});
+{ "_id" : "Manik", "total" : 9000 }
+{ "_id" : "Anshu", "total" : 7000 }
+{ "_id" : "Vishu", "total" : 7000 }
+{ "_id" : "Dnyaneshwari", "total" : 6000 }
+{ "_id" : "Pradnya", "total" : 4000 }
+{ "_id" : "Sameera", "total" : 4000 }
+{ "_id" : "Dnyani", "total" : 1000 }
+>  db.website.aggregate({$group:{_id:"$name","total":{$min:"$amount"}}});
+{ "_id" : "Manik", "total" : 9000 }
+{ "_id" : "Anshu", "total" : 7000 }
+{ "_id" : "Vishu", "total" : 3000 }
+{ "_id" : "Dnyaneshwari", "total" : 6000 }
+{ "_id" : "Pradnya", "total" : 4000 }
+{ "_id" : "Sameera", "total" : 4000 }
+{ "_id" : "Dnyani", "total" : 1000 }
+>  db.website.aggregate({$group:{_id:"$name","total":{$max:"$amount"}}});
+{ "_id" : "Manik", "total" : 9000 }
+{ "_id" : "Anshu", "total" : 7000 }
+{ "_id" : "Vishu", "total" : 9000 }
+{ "_id" : "Dnyaneshwari", "total" : 6000 }
+{ "_id" : "Pradnya", "total" : 4000 }
+{ "_id" : "Sameera", "total" : 4000 }
+{ "_id" : "Dnyani", "total" : 1000 }
+> db.website.aggregate({$group:{_id:"$name","total":{$first:"$amount"}}});
+{ "_id" : "Manik", "total" : 9000 }
+{ "_id" : "Anshu", "total" : 7000 }
+{ "_id" : "Vishu", "total" : 3000 }
+{ "_id" : "Dnyaneshwari", "total" : 6000 }
+{ "_id" : "Pradnya", "total" : 4000 }
+{ "_id" : "Sameera", "total" : 4000 }
+{ "_id" : "Dnyani", "total" : 1000 }
+> db.website.aggregate({$group:{_id:"$name","total":{$last:"$amount"}}});
+{ "_id" : "Manik", "total" : 9000 }
+{ "_id" : "Anshu", "total" : 7000 }
+{ "_id" : "Vishu", "total" : 9000 }
+{ "_id" : "Dnyaneshwari", "total" : 6000 }
+{ "_id" : "Pradnya", "total" : 4000 }
+{ "_id" : "Sameera", "total" : 4000 }
+{ "_id" : "Dnyani", "total" : 1000 }
+>  db.website.aggregate({$group:{_id:"$name","total":{$push:"$amount"}}});
+{ "_id" : "Manik", "total" : [ 9000 ] }
+{ "_id" : "Anshu", "total" : [ 7000 ] }
+{ "_id" : "Vishu", "total" : [ 3000, 9000, 9000 ] }
+{ "_id" : "Dnyaneshwari", "total" : [ 6000 ] }
+{ "_id" : "Pradnya", "total" : [ 4000 ] }
+{ "_id" : "Sameera", "total" : [ 4000 ] }
+{ "_id" : "Dnyani", "total" : [ 1000 ] }
+> db.website.aggregate({$group:{_id:"$name","total":{$sum:1}}});
+{ "_id" : "Manik", "total" : 1 }
+{ "_id" : "Anshu", "total" : 1 }
+{ "_id" : "Vishu", "total" : 3 }
+{ "_id" : "Dnyaneshwari", "total" : 1 }
+{ "_id" : "Pradnya", "total" : 1 }
+{ "_id" : "Sameera", "total" : 1 }
+{ "_id" : "Dnyani", "total" : 1 }
+> db.createCollection('website1');
+{ "ok" : 1 }
+> db.website1.insert({'r':1,'name':'Anu'});
+WriteResult({ "nInserted" : 1 })
+>  db.website1.insert({'r':1,'name':'Anu'});
+WriteResult({ "nInserted" : 1 })
+>  db.website1.find().pretty()
+{ "_id" : ObjectId("653a259801b81b0b805dd5a8"), "r" : 1, "name" : "Anu" }
+{ "_id" : ObjectId("653a25a501b81b0b805dd5a9"), "r" : 1, "name" : "Anu" }
+>  db.website1.createIndex({'name':1})
+{
+	"createdCollectionAutomatically" : false,
+	"numIndexesBefore" : 1,
+	"numIndexesAfter" : 2,
+	"ok" : 1
+}
+> db.website1.createIndex({'name':-1})
+{
+	"createdCollectionAutomatically" : false,
+	"numIndexesBefore" : 2,
+	"numIndexesAfter" : 3,
+	"ok" : 1
+}
+> db.website1.getIndexes()
+[
+	{
+		"v" : 1,
+		"key" : {
+			"_id" : 1
+		},
+		"name" : "_id_",
+		"ns" : "comp.website1"
+	},
+	{
+		"v" : 1,
+		"key" : {
+			"name" : 1
+		},
+		"name" : "name_1",
+		"ns" : "comp.website1"
+	},
+	{
+		"v" : 1,
+		"key" : {
+			"name" : -1
+		},
+		"name" : "name_-1",
+		"ns" : "comp.website1"
+	}
+]
+> db.website.dropIndex({'name':-1})
+{
+	"nIndexesWas" : 1,
+	"ok" : 0,
+	"errmsg" : "can't find index with key:{ name: -1.0 }"
+}
+> db.website1.dropIndex({'name':-1})
+{ "nIndexesWas" : 3, "ok" : 1 }
+> use Brigade
+
